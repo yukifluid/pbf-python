@@ -1,0 +1,40 @@
+{
+    "dimention": 3,
+    "delta_time": 0.016,
+    "num_timesteps": 150,
+    "rest_density": 998.29,
+    "particle_mass": 0.04,
+    "num_neighbor_particles": 30,
+    "boundary_size": [
+        20,
+        20,
+        20
+    ],
+    "fluid_size": [
+        10,
+        10,
+        10
+    ],
+    "external_force": [
+        0.0,
+        -9.8,
+        0.0
+    ],
+    "constraint_relaxation": 0.001,
+    "allowable_compressibility": 0.05,
+    "num_max_iterations": 10,
+    "k": 0.1,
+    "n": 4.0,
+    "q": 0.2,
+    "c": 0.01,
+    "initial_velocity": [
+        -0.17400413751602173,
+        0.4663110375404358,
+        0.03796952962875366
+    ],
+    "initial_position": [
+        0.06313106417655945,
+        -0.1369713991880417,
+        0.004060134291648865
+    ]
+}
