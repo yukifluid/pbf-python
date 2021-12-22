@@ -67,15 +67,14 @@ class PositionBasedFluids:
         while itr < self._config.num_max_iterations and cmp_var > self._config.eta:
             dp = calc_position_correction(self._config.rho_0, self._config.h, self._config.m, self._config.dt, self._config.q, self._config.k, self._config.n, self._config.eps, self._particle.vol, self._particle.next_pos, edge_index)
             self._particle.f_next_pos += dp[self._config.num_boundary_particles:]
+            self._particle.f_next_pos = self._solid.respond(self._particle.f_next_pos)
+
             itr += 1
             rho = calc_density(self._config.rho_0, self._config.h, self._particle.vol, self._particle.next_pos, edge_index)
             cmp_var = torch.mean(torch.abs(rho / self._config._rest_density - 1.0))
 
         # delta position
         self._particle.dp = self._particle.next_pos - self._particle.pos
-
-        # process boundary
-        self._particle.f_next_pos = self._solid.respond(self._particle.f_next_pos)
 
         # update velocity
         self._particle.f_next_vel = (self._particle.f_next_pos - self._particle.f_pos) / self._config.dt
