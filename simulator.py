@@ -55,6 +55,7 @@ class PositionBasedFluids:
 
         # process boundary 
         self._particle.f_next_pos = self._solid.respond(self._particle.f_next_pos)
+        self._particle.f_next_vel = (self._particle.f_next_pos - self._particle.f_pos) / self._config.dt
 
         # intermidiate quantities
         self._particle.mid_vel = self._particle.next_vel.clone()
@@ -80,7 +81,9 @@ class PositionBasedFluids:
         self._particle.f_next_vel = (self._particle.f_next_pos - self._particle.f_pos) / self._config.dt
 
         # XSPH viscosity
-        xsph_viscosity = calc_xsph_viscosity(self._config.rho_0, self._config.h, self._config.c, self._particle.vol, self._particle.next_vel, self._particle.next_pos, edge_index)
+        edge_index = radius_graph(self._particle.next_pos, self._config.h, loop=True)
+        rho = calc_density(self._config.rho_0, self._config.h, self._particle.vol, self._particle.next_pos, edge_index)
+        xsph_viscosity = calc_xsph_viscosity(self._config.rho_0, self._config.h, self._config.c, self._particle.vol, rho, self._particle.next_vel, self._particle.next_pos, edge_index)
         self._particle.f_next_vel += xsph_viscosity[self._config.num_boundary_particles:]
 
     def _measure(self, elapsed_time_s: float) -> None:

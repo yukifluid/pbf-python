@@ -52,11 +52,10 @@ def calc_scaling_factor(rho_0: float, h: float, m: float, eps: float, vol: torch
     fact = -c / (sd + eps)
     return fact
 
-def calc_xsph_viscosity(rho_0: float, h: float, c: float, vol: torch.Tensor, v: torch.Tensor, p: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
+def calc_xsph_viscosity(rho_0: float, h: float, c: float, vol: torch.Tensor, rho: torch.Tensor, v: torch.Tensor, p: torch.Tensor, edge_index: torch.Tensor) -> torch.Tensor:
     i = edge_index[1]
     j = edge_index[0]
 
-    rho = calc_density(rho_0, h, vol, p, edge_index)
     v_ji = v[j] - v[i]
     r_ji = p[j] - p[i]
     r = torch.linalg.norm(r_ji, axis=1)
