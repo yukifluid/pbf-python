@@ -62,12 +62,13 @@ class PositionBasedFluids:
         self._particle.mid_pos = self._particle.next_pos.clone()
 
         # position correction
-        edge_index = radius_graph(self._particle.next_pos, self._config.h, loop=True)
         itr = 0
         cmp_var = 1.0
         while itr < self._config.num_max_iterations and cmp_var > self._config.eta:
+            edge_index = radius_graph(self._particle.next_pos, self._config.h, loop=True)
             dp = calc_position_correction(self._config.rho_0, self._config.h, self._config.m, self._config.dt, self._config.q, self._config.k, self._config.n, self._config.eps, self._particle.vol, self._particle.next_pos, edge_index)
             self._particle.f_next_pos += dp[self._config.num_boundary_particles:]
+            self._particle.f_next_pos = self._solid.respond(self._particle.f_next_pos)
 
             itr += 1
             rho = calc_density(self._config.rho_0, self._config.h, self._particle.vol, self._particle.next_pos, edge_index)
@@ -75,8 +76,6 @@ class PositionBasedFluids:
 
         # delta position
         self._particle.dp = self._particle.next_pos - self._particle.pos
-
-        self._particle.f_next_pos = self._solid.respond(self._particle.f_next_pos)
 
         # update velocity
         self._particle.f_next_vel = (self._particle.f_next_pos - self._particle.f_pos) / self._config.dt
